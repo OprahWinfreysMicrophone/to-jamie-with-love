@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Jamie's Sacred Space</title>
+
+<!-- PWA / Add to Home Screen -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Sacred Space">
+<meta name="theme-color" content="#faf6f0">
+<link id="apple-touch-icon" rel="apple-touch-icon">
+
+<!-- Splash screens (iPhone sizes) -->
+<link id="splash-2796" rel="apple-touch-startup-image" media="(device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3)">
+<link id="splash-2556" rel="apple-touch-startup-image" media="(device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3)">
+<link id="splash-2532" rel="apple-touch-startup-image" media="(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3)">
+<link id="splash-2436" rel="apple-touch-startup-image" media="(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3)">
+<link id="splash-1334" rel="apple-touch-startup-image" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2)">
+
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --rose: #e8c4c4;
+    --rose-light: #f5e6e6;
+    --lavender: #c9c0d8;
+    --lavender-light: #ede9f4;
+    --sage: #b8c9b8;
+    --sage-light: #e4ede4;
+    --cream: #faf6f0;
+    --parchment: #f0e8dc;
+    --mist: #e8e4ef;
+    --text-dark: #3a3040;
+    --text-mid: #6b5f7a;
+    --text-soft: #9d8fab;
+    --gold: #c9a96e;
+    --gold-light: #e8d5b0;
+  }
+
+  body {
+    font-family: 'Jost', sans-serif;
+    background-color: var(--cream);
+    color: var(--text-dark);
+    min-height: 100vh;
+    background-image:
+      radial-gradient(ellipse at 20% 10%, rgba(201,192,216,0.25) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 90%, rgba(184,201,184,0.2) 0%, transparent 50%),
+      radial-gradient(ellipse at 60% 30%, rgba(232,196,196,0.15) 0%, transparent 40%);
+  }
+
+  header { text-align: center; padding: 3rem 2rem 1.5rem; }
+  .header-moon { font-size: 2.2rem; line-height: 1; margin-bottom: 0.5rem; filter: drop-shadow(0 0 8px rgba(201,169,110,0.4)); }
+  header h1 { font-family: 'Cormorant Garamond', serif; font-size: 2.6rem; font-weight: 300; letter-spacing: 0.12em; color: var(--text-dark); }
+  header h1 span { color: var(--text-mid); font-style: italic; }
+  .date-line { font-size: 0.75rem; letter-spacing: 0.18em; color: var(--text-soft); text-transform: uppercase; margin-top: 0.5rem; }
+  .divider { width: 80px; height: 1px; background: linear-gradient(to right, transparent, var(--gold), transparent); margin: 1.2rem auto; }
+
+  main {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 1.5rem 4rem;
+    display: grid;
+    gap: 1.5rem;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-areas:
+      "moon moon weather"
+      "garden energy principles"
+      "affirmation affirmation affirmation"
+      "braindump braindump todo";
+  }
+
+  @media (max-width: 800px) {
+    main {
+      grid-template-columns: 1fr 1fr;
+      grid-template-areas:
+        "moon moon"
+        "weather weather"
+        "garden energy"
+        "principles principles"
+        "affirmation affirmation"
+        "braindump braindump"
+        "todo todo";
+    }
+  }
+  @media (max-width: 500px) {
+    main { grid-template-columns: 1fr; grid-template-areas: "moon" "weather" "garden" "energy" "principles" "affirmation" "braindump" "todo"; }
+  }
+
+  .card {
+    background: rgba(255,255,255,0.65);
+    border: 1px solid rgba(201,169,110,0.2);
+    border-radius: 20px;
+    padding: 1.6rem;
+    backdrop-filter: blur(8px);
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .card:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(106,78,120,0.1); }
+  .card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; border-radius: 20px 20px 0 0; }
+
+  .card-moon       { grid-area: moon;        background: rgba(237,233,244,0.7); }
+  .card-moon::before { background: linear-gradient(to right, var(--lavender), var(--rose)); }
+  .card-weather    { grid-area: weather;     background: rgba(232,240,248,0.65); }
+  .card-weather::before { background: linear-gradient(to right, #a8c8e8, var(--lavender)); }
+  .card-garden     { grid-area: garden;      background: rgba(228,237,228,0.65); }
+  .card-garden::before { background: linear-gradient(to right, var(--sage), var(--lavender)); }
+  .card-energy     { grid-area: energy;      background: rgba(237,233,244,0.6); }
+  .card-energy::before { background: linear-gradient(to right, var(--lavender), var(--gold)); }
+  .card-principles { grid-area: principles;  background: rgba(245,238,228,0.65); }
+  .card-principles::before { background: linear-gradient(to right, var(--gold-light), var(--rose)); }
+  .card-affirmation { grid-area: affirmation; background: rgba(240,232,220,0.7); text-align: center; }
+  .card-affirmation::before { background: linear-gradient(to right, var(--rose), var(--lavender), var(--sage)); }
+  .card-braindump  { grid-area: braindump;   background: rgba(245,230,230,0.6); }
+  .card-braindump::before { background: linear-gradient(to right, var(--rose), var(--lavender)); }
+  .card-todo       { grid-area: todo;        background: rgba(228,237,228,0.6); }
+  .card-todo::before { background: linear-gradient(to right, var(--sage), var(--gold-light)); }
+
+  .card-label { font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-soft); margin-bottom: 1rem; display: flex; align-items: center; gap: 0.4rem; }
+  .card-label::after { content: ''; flex: 1; height: 1px; background: rgba(201,169,110,0.25); }
+
+  /* MOON */
+  .moon-display { display: flex; align-items: center; gap: 1.5rem; margin-bottom: 1.2rem; }
+  .moon-symbol { font-size: 3.5rem; line-height: 1; filter: drop-shadow(0 2px 8px rgba(201,169,110,0.3)); flex-shrink: 0; }
+  .moon-info h2 { font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; font-weight: 400; color: var(--text-dark); line-height: 1.2; }
+  .moon-info .moon-sub { font-size: 0.8rem; color: var(--text-mid); margin-top: 0.3rem; letter-spacing: 0.05em; }
+  .moon-bar-wrap { margin-top: 1rem; }
+  .moon-bar-label { display: flex; justify-content: space-between; font-size: 0.72rem; color: var(--text-soft); margin-bottom: 0.4rem; }
+  .moon-bar { height: 5px; background: rgba(201,169,110,0.15); border-radius: 10px; overflow: hidden; }
+  .moon-bar-fill { height: 100%; background: linear-gradient(to right, var(--lavender), var(--gold)); border-radius: 10px; }
+  .moon-phases { display: flex; justify-content: space-between; margin-top: 1.2rem; gap: 0.3rem; }
+  .phase-dot { text-align: center; flex: 1; opacity: 0.5; }
+  .phase-dot.active { opacity: 1; }
+  .phase-dot .symbol { font-size: 1.2rem; }
+  .phase-dot .label { font-size: 0.6rem; color: var(--text-soft); margin-top: 2px; }
+  .moon-meaning { margin-top: 1rem; font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 0.95rem; line-height: 1.7; color: var(--text-mid); background: rgba(201,169,110,0.08); border-radius: 10px; padding: 0.8rem 1rem; border-left: 2px solid var(--gold-light); }
+
+  /* WEATHER */
+  .weather-main { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; }
+  .weather-icon { font-size: 3rem; line-height: 1; flex-shrink: 0; }
+  .weather-temp { font-family: 'Cormorant Garamond', serif; font-size: 2.8rem; font-weight: 300; color: var(--text-dark); line-height: 1; }
+  .weather-desc { font-size: 0.85rem; color: var(--text-mid); margin-top: 0.2rem; text-transform: capitalize; }
+  .weather-location { font-size: 0.7rem; color: var(--text-soft); letter-spacing: 0.1em; text-transform: uppercase; }
+  .weather-details { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-top: 0.8rem; }
+  .weather-detail { background: rgba(168,200,232,0.15); border-radius: 10px; padding: 0.5rem 0.7rem; }
+  .weather-detail-label { font-size: 0.65rem; color: var(--text-soft); letter-spacing: 0.1em; text-transform: uppercase; }
+  .weather-detail-val { font-size: 0.9rem; color: var(--text-dark); margin-top: 0.1rem; }
+  .weather-loading { font-size: 0.85rem; color: var(--text-soft); font-style: italic; }
+
+  /* GARDEN */
+  .season-badge { display: inline-flex; align-items: center; gap: 0.3rem; background: rgba(184,201,184,0.3); border: 1px solid rgba(184,201,184,0.5); border-radius: 20px; padding: 0.25rem 0.7rem; font-size: 0.7rem; color: #4a6b4a; letter-spacing: 0.08em; margin-bottom: 1rem; }
+  .garden-item { display: flex; align-items: flex-start; gap: 0.7rem; padding: 0.6rem 0; border-bottom: 1px dashed rgba(184,201,184,0.4); }
+  .garden-item:last-child { border-bottom: none; }
+  .garden-icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 1px; }
+  .garden-item p { font-size: 0.82rem; color: var(--text-mid); line-height: 1.5; }
+  .garden-item strong { display: block; font-size: 0.85rem; color: var(--text-dark); font-weight: 400; margin-bottom: 1px; }
+
+  /* ENERGY */
+  .chakra-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; margin-top: 0.5rem; }
+  .chakra-item { background: rgba(255,255,255,0.5); border-radius: 10px; padding: 0.6rem 0.8rem; border: 1px solid rgba(201,192,216,0.3); }
+  .chakra-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-right: 0.4rem; vertical-align: middle; }
+  .chakra-name { font-size: 0.75rem; color: var(--text-dark); }
+  .chakra-note { font-size: 0.7rem; color: var(--text-soft); margin-top: 0.2rem; line-height: 1.4; }
+  .energy-tip { margin-top: 1rem; font-size: 0.8rem; line-height: 1.6; color: var(--text-mid); padding: 0.7rem; background: rgba(201,192,216,0.15); border-radius: 10px; }
+
+  /* PRINCIPLES */
+  .principle-item { display: flex; gap: 0.8rem; align-items: flex-start; padding: 0.65rem 0; border-bottom: 1px dashed rgba(201,169,110,0.25); }
+  .principle-item:last-child { border-bottom: none; }
+  .principle-num { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; color: var(--gold); flex-shrink: 0; line-height: 1.3; min-width: 16px; }
+  .principle-text { font-size: 0.82rem; color: var(--text-dark); line-height: 1.5; }
+  .principle-text em { font-family: 'Cormorant Garamond', serif; font-size: 0.92rem; color: var(--text-soft); display: block; margin-top: 0.15rem; font-style: italic; }
+
+  /* AFFIRMATION */
+  .affirmation-symbol { font-size: 1.8rem; margin-bottom: 0.8rem; filter: drop-shadow(0 2px 6px rgba(201,169,110,0.3)); }
+  .affirmation-text { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; font-weight: 300; line-height: 1.6; color: var(--text-dark); max-width: 600px; margin: 0 auto; }
+  .affirmation-sub { font-size: 0.75rem; color: var(--text-soft); letter-spacing: 0.12em; text-transform: uppercase; margin-top: 1rem; }
+  .refresh-btn { margin-top: 1.2rem; background: transparent; border: 1px solid rgba(201,169,110,0.3); border-radius: 20px; padding: 0.4rem 1.2rem; font-size: 0.72rem; letter-spacing: 0.1em; color: var(--text-mid); cursor: pointer; font-family: 'Jost', sans-serif; transition: all 0.2s; text-transform: uppercase; }
+  .refresh-btn:hover { background: rgba(201,169,110,0.1); border-color: rgba(201,169,110,0.5); }
+
+  /* BRAIN DUMP */
+  .card-textarea { width: 100%; min-height: 150px; background: rgba(255,255,255,0.5); border: 1px solid rgba(201,169,110,0.2); border-radius: 12px; padding: 0.9rem; font-family: 'Jost', sans-serif; font-size: 0.85rem; color: var(--text-dark); resize: vertical; line-height: 1.7; outline: none; transition: border-color 0.2s; }
+  .card-textarea::placeholder { color: var(--text-soft); font-style: italic; }
+  .card-textarea:focus { border-color: rgba(201,169,110,0.5); }
+  .save-note { font-size: 0.68rem; color: var(--text-soft); margin-top: 0.5rem; letter-spacing: 0.05em; }
+
+  /* TO DO */
+  .todo-input-row { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
+  .todo-input { flex: 1; background: rgba(255,255,255,0.5); border: 1px solid rgba(184,201,184,0.4); border-radius: 10px; padding: 0.5rem 0.8rem; font-family: 'Jost', sans-serif; font-size: 0.82rem; color: var(--text-dark); outline: none; transition: border-color 0.2s; }
+  .todo-input::placeholder { color: var(--text-soft); font-style: italic; }
+  .todo-input:focus { border-color: rgba(184,201,184,0.7); }
+  .todo-add-btn { background: rgba(184,201,184,0.3); border: 1px solid rgba(184,201,184,0.5); border-radius: 10px; padding: 0.5rem 0.9rem; font-size: 0.8rem; color: #4a6b4a; cursor: pointer; font-family: 'Jost', sans-serif; transition: background 0.2s; white-space: nowrap; }
+  .todo-add-btn:hover { background: rgba(184,201,184,0.5); }
+  .todo-list { list-style: none; max-height: 220px; overflow-y: auto; }
+  .todo-item { display: flex; align-items: center; gap: 0.6rem; padding: 0.55rem 0; border-bottom: 1px dashed rgba(184,201,184,0.35); }
+  .todo-item:last-child { border-bottom: none; }
+  .todo-check { width: 16px; height: 16px; border-radius: 50%; border: 1.5px solid rgba(184,201,184,0.7); background: transparent; cursor: pointer; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 10px; color: #4a6b4a; transition: all 0.2s; }
+  .todo-check.done { background: rgba(184,201,184,0.5); border-color: #7aaa7a; }
+  .todo-text { font-size: 0.82rem; color: var(--text-dark); flex: 1; line-height: 1.4; transition: all 0.2s; }
+  .todo-text.done { text-decoration: line-through; color: var(--text-soft); }
+  .todo-del { background: none; border: none; cursor: pointer; color: var(--text-soft); font-size: 0.9rem; padding: 0 0.2rem; opacity: 0; transition: opacity 0.2s; line-height: 1; }
+  .todo-item:hover .todo-del { opacity: 1; }
+  .todo-empty { font-size: 0.8rem; color: var(--text-soft); font-style: italic; padding: 0.5rem 0; }
+
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+  .card { animation: fadeIn 0.6s ease both; }
+  .card:nth-child(2) { animation-delay: 0.08s; }
+  .card:nth-child(3) { animation-delay: 0.16s; }
+  .card:nth-child(4) { animation-delay: 0.24s; }
+  .card:nth-child(5) { animation-delay: 0.32s; }
+  .card:nth-child(6) { animation-delay: 0.40s; }
+  .card:nth-child(7) { animation-delay: 0.48s; }
+  .card:nth-child(8) { animation-delay: 0.56s; }
+
+  footer { text-align: center; padding-bottom: 2rem; font-size: 0.68rem; letter-spacing: 0.15em; color: var(--text-soft); text-transform: uppercase; }
+
+  /* SPLASH SCREEN */
+  #splash {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: var(--cream);
+    background-image:
+      radial-gradient(ellipse at 20% 10%, rgba(201,192,216,0.35) 0%, transparent 55%),
+      radial-gradient(ellipse at 80% 90%, rgba(184,201,184,0.25) 0%, transparent 55%),
+      radial-gradient(ellipse at 60% 40%, rgba(232,196,196,0.2) 0%, transparent 45%);
+    transition: opacity 0.8s ease, visibility 0.8s ease;
+  }
+  #splash.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+  .splash-moon { font-size: 4rem; margin-bottom: 1.2rem; animation: splashPulse 2s ease-in-out infinite; }
+  .splash-title { font-family: 'Cormorant Garamond', serif; font-size: 2rem; font-weight: 300; letter-spacing: 0.14em; color: var(--text-dark); }
+  .splash-sub { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; font-style: italic; color: var(--text-mid); margin-top: 0.3rem; letter-spacing: 0.08em; }
+  .splash-divider { width: 60px; height: 1px; background: linear-gradient(to right, transparent, var(--gold), transparent); margin: 1.4rem auto; }
+  .splash-dots { display: flex; gap: 0.5rem; margin-top: 0.5rem; }
+  .splash-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--lavender); animation: splashDot 1.4s ease-in-out infinite; }
+  .splash-dot:nth-child(2) { animation-delay: 0.2s; background: var(--rose); }
+  .splash-dot:nth-child(3) { animation-delay: 0.4s; background: var(--sage); }
+  @keyframes splashPulse { 0%,100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.08); opacity: 0.85; } }
+  @keyframes splashDot { 0%,80%,100% { transform: scale(0.6); opacity: 0.4; } 40% { transform: scale(1); opacity: 1; } }
+</style>
+</head>
+<body>
+
+<!-- SPLASH SCREEN -->
+<div id="splash">
+  <div class="splash-moon">🌙</div>
+  <div class="splash-title">Jamie's Sacred Space</div>
+  <div class="splash-sub">a place of peace & healing</div>
+  <div class="splash-divider"></div>
+  <div class="splash-dots">
+    <div class="splash-dot"></div>
+    <div class="splash-dot"></div>
+    <div class="splash-dot"></div>
+  </div>
+</div>
+
+<header>
+  <div class="header-moon">☽ ✦ ☾</div>
+  <h1>Jamie's <span>Sacred Space</span></h1>
+  <p class="date-line" id="date-line"></p>
+  <div class="divider"></div>
+</header>
+
+<main>
+
+  <!-- MOON -->
+  <div class="card card-moon">
+    <div class="card-label">🌙 Moon</div>
+    <div class="moon-display">
+      <div class="moon-symbol" id="moon-symbol">🌔</div>
+      <div class="moon-info">
+        <h2 id="moon-name">Waxing Gibbous</h2>
+        <div class="moon-sub" id="moon-illumination">Illumination: 74%</div>
+        <div class="moon-sub" id="moon-in-sign">Moon in Scorpio</div>
+      </div>
+    </div>
+    <div class="moon-bar-wrap">
+      <div class="moon-bar-label"><span>New Moon</span><span>Full Moon</span></div>
+      <div class="moon-bar"><div class="moon-bar-fill" id="moon-bar" style="width:74%"></div></div>
+    </div>
+    <div class="moon-phases">
+      <div class="phase-dot" id="p1"><div class="symbol">🌑</div><div class="label">New</div></div>
+      <div class="phase-dot" id="p2"><div class="symbol">🌒</div><div class="label">Wax ☽</div></div>
+      <div class="phase-dot" id="p3"><div class="symbol">🌓</div><div class="label">First Q</div></div>
+      <div class="phase-dot active" id="p4"><div class="symbol">🌔</div><div class="label">Wax ◑</div></div>
+      <div class="phase-dot" id="p5"><div class="symbol">🌕</div><div class="label">Full</div></div>
+      <div class="phase-dot" id="p6"><div class="symbol">🌖</div><div class="label">Wan ◑</div></div>
+      <div class="phase-dot" id="p7"><div class="symbol">🌗</div><div class="label">Last Q</div></div>
+      <div class="phase-dot" id="p8"><div class="symbol">🌘</div><div class="label">Wan ☽</div></div>
+    </div>
+    <div class="moon-meaning" id="moon-meaning">A time of building energy — set intentions into motion, take bold steps, and trust the momentum gathering within you.</div>
+  </div>
+
+  <!-- WEATHER -->
+  <div class="card card-weather">
+    <div class="card-label">🌤 Weather</div>
+    <div id="weather-content"><p class="weather-loading">Detecting your location...</p></div>
+  </div>
+
+  <!-- GARDEN -->
+  <div class="card card-garden">
+    <div class="card-label">🌿 Garden</div>
+    <div class="season-badge">🌱 Early Spring · Indiana Zone 6a</div>
+    <div class="garden-item">
+      <div class="garden-icon">🌱</div>
+      <div><strong>Start seeds indoors</strong><p>Tomatoes, peppers & eggplant — 6–8 weeks before last frost (mid-May).</p></div>
+    </div>
+    <div class="garden-item">
+      <div class="garden-icon">🌿</div>
+      <div><strong>Medicinal herbs to plant</strong><p>Lavender, chamomile & mugwort — beautiful for Reiki and ritual work.</p></div>
+    </div>
+    <div class="garden-item">
+      <div class="garden-icon">🌙</div>
+      <div><strong>Moon planting tip</strong><p>Plant leafy herbs during waxing moon. Roots & bulbs during waning.</p></div>
+    </div>
+  </div>
+
+  <!-- ENERGY WORK -->
+  <div class="card card-energy">
+    <div class="card-label">🔮 Energy Work</div>
+    <div class="chakra-grid">
+      <div class="chakra-item"><span class="chakra-dot" style="background:#c0392b;"></span><span class="chakra-name">Root</span><div class="chakra-note">Ground & stabilize your foundation</div></div>
+      <div class="chakra-item"><span class="chakra-dot" style="background:#e67e22;"></span><span class="chakra-name">Sacral</span><div class="chakra-note">Flow with creative energy</div></div>
+      <div class="chakra-item"><span class="chakra-dot" style="background:#f1c40f;"></span><span class="chakra-name">Solar Plexus</span><div class="chakra-note">Own your personal power</div></div>
+      <div class="chakra-item"><span class="chakra-dot" style="background:#27ae60;"></span><span class="chakra-name">Heart</span><div class="chakra-note">Open to love & healing</div></div>
+      <div class="chakra-item"><span class="chakra-dot" style="background:#2980b9;"></span><span class="chakra-name">Throat</span><div class="chakra-note">Speak your sacred truth</div></div>
+      <div class="chakra-item"><span class="chakra-dot" style="background:#8e44ad;"></span><span class="chakra-name">Third Eye</span><div class="chakra-note">Trust your intuition</div></div>
+    </div>
+    <div class="energy-tip" id="energy-tip">🕯️ Today's practice: Place your hands over your heart center. Breathe in light, breathe out tension. Repeat 3 times.</div>
+  </div>
+
+  <!-- 5 REIKI PRINCIPLES -->
+  <div class="card card-principles">
+    <div class="card-label">✦ The Five Reiki Principles</div>
+    <div class="principle-item">
+      <div class="principle-num">I</div>
+      <div class="principle-text">Just for today, I will not anger.<em>Ikari suru na</em></div>
+    </div>
+    <div class="principle-item">
+      <div class="principle-num">II</div>
+      <div class="principle-text">Just for today, I will not worry.<em>Shinpai suru na</em></div>
+    </div>
+    <div class="principle-item">
+      <div class="principle-num">III</div>
+      <div class="principle-text">Just for today, I will be grateful.<em>Kansha shite</em></div>
+    </div>
+    <div class="principle-item">
+      <div class="principle-num">IV</div>
+      <div class="principle-text">Just for today, I will do my work honestly.<em>Gyo wo hageme</em></div>
+    </div>
+    <div class="principle-item">
+      <div class="principle-num">V</div>
+      <div class="principle-text">Just for today, I will be kind to every living thing.<em>Hito ni shinsetsu ni</em></div>
+    </div>
+  </div>
+
+  <!-- AFFIRMATION -->
+  <div class="card card-affirmation">
+    <div class="affirmation-symbol" id="aff-symbol">✦</div>
+    <div class="affirmation-text" id="aff-text">I am a channel of healing light. My energy is sacred, my presence is enough.</div>
+    <div class="affirmation-sub">Daily Affirmation</div>
+    <button class="refresh-btn" onclick="newAffirmation()">✦ New Affirmation</button>
+  </div>
+
+  <!-- BRAIN DUMP -->
+  <div class="card card-braindump">
+    <div class="card-label">🌸 Brain Dump</div>
+    <textarea class="card-textarea" id="braindump-area" placeholder="Let it all out... thoughts, feelings, ideas, anything on your mind."></textarea>
+    <p class="save-note" id="braindump-save-note">Auto-saved to this browser</p>
+  </div>
+
+  <!-- TO DO -->
+  <div class="card card-todo">
+    <div class="card-label">✿ To Do</div>
+    <div class="todo-input-row">
+      <input class="todo-input" id="todo-input" type="text" placeholder="Add something..." />
+      <button class="todo-add-btn" onclick="addTodo()">+ Add</button>
+    </div>
+    <ul class="todo-list" id="todo-list"></ul>
+  </div>
+
+</main>
+
+<footer>Made with love ♡ Jamie's Sacred Space</footer>
+
+<script>
+  // Generate app icon via canvas (moon on cream background)
+  function makeIcon(size) {
+    const c = document.createElement('canvas');
+    c.width = c.height = size;
+    const ctx = c.getContext('2d');
+    // Background
+    ctx.fillStyle = '#faf6f0';
+    ctx.beginPath();
+    ctx.roundRect(0, 0, size, size, size * 0.22);
+    ctx.fill();
+    // Soft gradient blobs
+    const g1 = ctx.createRadialGradient(size*0.25, size*0.25, 0, size*0.25, size*0.25, size*0.5);
+    g1.addColorStop(0, 'rgba(201,192,216,0.4)');
+    g1.addColorStop(1, 'rgba(201,192,216,0)');
+    ctx.fillStyle = g1; ctx.fillRect(0,0,size,size);
+    const g2 = ctx.createRadialGradient(size*0.75, size*0.75, 0, size*0.75, size*0.75, size*0.45);
+    g2.addColorStop(0, 'rgba(184,201,184,0.3)');
+    g2.addColorStop(1, 'rgba(184,201,184,0)');
+    ctx.fillStyle = g2; ctx.fillRect(0,0,size,size);
+    // Moon emoji
+    ctx.font = (size * 0.52) + 'px serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('🌙', size/2, size/2 + size*0.03);
+    return c.toDataURL('image/png');
+  }
+
+  function makeSplashCanvas(w, h) {
+    const c = document.createElement('canvas');
+    c.width = w; c.height = h;
+    const ctx = c.getContext('2d');
+    ctx.fillStyle = '#faf6f0';
+    ctx.fillRect(0,0,w,h);
+    const g1 = ctx.createRadialGradient(w*0.2,h*0.15,0,w*0.2,h*0.15,w*0.5);
+    g1.addColorStop(0,'rgba(201,192,216,0.35)'); g1.addColorStop(1,'rgba(201,192,216,0)');
+    ctx.fillStyle=g1; ctx.fillRect(0,0,w,h);
+    const g2 = ctx.createRadialGradient(w*0.8,h*0.85,0,w*0.8,h*0.85,w*0.5);
+    g2.addColorStop(0,'rgba(184,201,184,0.28)'); g2.addColorStop(1,'rgba(184,201,184,0)');
+    ctx.fillStyle=g2; ctx.fillRect(0,0,w,h);
+    ctx.font = Math.round(h*0.12) + 'px serif';
+    ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText('🌙', w/2, h/2 - h*0.1);
+    ctx.fillStyle='#3a3040';
+    ctx.font = '300 ' + Math.round(h*0.045) + 'px Cormorant Garamond, Georgia, serif';
+    ctx.letterSpacing = '0.12em';
+    ctx.fillText("Jamie's Sacred Space", w/2, h/2 + h*0.08);
+    ctx.fillStyle='#9d8fab';
+    ctx.font = 'italic ' + Math.round(h*0.028) + 'px Cormorant Garamond, Georgia, serif';
+    ctx.fillText('a place of peace & healing', w/2, h/2 + h*0.14);
+    return c.toDataURL('image/png');
+  }
+
+  // Set app icon
+  const iconData = makeIcon(180);
+  document.getElementById('apple-touch-icon').href = iconData;
+
+  // Set splash screens
+  const splashSizes = [
+    {id:'splash-2796',w:1290,h:2796},{id:'splash-2556',w:1179,h:2556},
+    {id:'splash-2532',w:1170,h:2532},{id:'splash-2436',w:1125,h:2436},
+    {id:'splash-1334',w:750,h:1334}
+  ];
+  splashSizes.forEach(s => {
+    const el = document.getElementById(s.id);
+    if (el) el.href = makeSplashCanvas(s.w, s.h);
+  });
+
+  // Dismiss splash after fonts + short delay
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      document.getElementById('splash').classList.add('hidden');
+    }, 1800);
+  });
+
+  // Date
+  const now = new Date();
+  document.getElementById('date-line').textContent = now.toLocaleDateString('en-US', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+
+  // Moon
+  function getMoonPhase() {
+    const known = new Date(2000, 0, 6, 18, 14);
+    const diff = new Date() - known;
+    const days = diff / (1000 * 60 * 60 * 24);
+    const cycle = 29.53058867;
+    const phase = ((days % cycle) + cycle) % cycle;
+    const illumination = Math.round(50 * (1 - Math.cos(2 * Math.PI * phase / cycle)));
+    let name, symbol, activePhase, meaning;
+    if (phase < 1.85)       { name="New Moon";        symbol="🌑"; activePhase=1; meaning="New beginnings call to you. Plant seeds of intention — the universe is listening."; }
+    else if (phase < 7.38)  { name="Waxing Crescent"; symbol="🌒"; activePhase=2; meaning="Your intentions are germinating. Nurture them with focused energy and hopeful thoughts."; }
+    else if (phase < 9.22)  { name="First Quarter";   symbol="🌓"; activePhase=3; meaning="Challenges arise to test your resolve. Push forward — you have the strength."; }
+    else if (phase < 14.77) { name="Waxing Gibbous";  symbol="🌔"; activePhase=4; meaning="A time of building energy — set intentions into motion, take bold steps, and trust the momentum."; }
+    else if (phase < 16.61) { name="Full Moon";        symbol="🌕"; activePhase=5; meaning="Peak energy. Release, celebrate, and let your gratitude flow like moonlight."; }
+    else if (phase < 22.15) { name="Waning Gibbous";  symbol="🌖"; activePhase=6; meaning="Time to reflect, share your gifts, and express gratitude for what has bloomed."; }
+    else if (phase < 23.99) { name="Last Quarter";    symbol="🌗"; activePhase=7; meaning="Let go of what doesn't serve you. Forgiveness and release open the path forward."; }
+    else                    { name="Waning Crescent";  symbol="🌘"; activePhase=8; meaning="Rest, restore, and surrender. The cycle nears completion — trust the darkness before dawn."; }
+    return { name, symbol, illumination, activePhase, phase, meaning };
+  }
+
+  const moonData = getMoonPhase();
+  document.getElementById('moon-symbol').textContent = moonData.symbol;
+  document.getElementById('moon-name').textContent = moonData.name;
+  document.getElementById('moon-illumination').textContent = 'Illumination: ' + moonData.illumination + '%';
+  document.getElementById('moon-bar').style.width = moonData.illumination + '%';
+  document.getElementById('moon-meaning').textContent = moonData.meaning;
+  for (let i = 1; i <= 8; i++) document.getElementById('p' + i).classList.toggle('active', i === moonData.activePhase);
+  const signs = ["Aries","Taurus","Gemini","Cancer","Leo","Virgo","Libra","Scorpio","Sagittarius","Capricorn","Aquarius","Pisces"];
+  document.getElementById('moon-in-sign').textContent = 'Moon in ' + signs[Math.floor((moonData.phase / 29.53) * 12) % 12];
+
+  // Energy tips
+  const tips = [
+    "🕯️ Today's practice: Place your hands over your heart center. Breathe in light, breathe out tension. Repeat 3 times.",
+    "🌿 Smudge your space with sage or palo santo before your Reiki session to clear stagnant energy.",
+    "💎 Place a rose quartz near your workspace today to invite loving, healing energy.",
+    "🧘 Begin with Gassho — hands in prayer at your heart — and set your intention before any healing work.",
+    "🌙 Tonight, leave your crystals under the moon to cleanse and recharge them.",
+    "🌸 Try a walking meditation barefoot in grass to ground your root chakra today.",
+  ];
+  document.getElementById('energy-tip').textContent = tips[now.getDate() % tips.length];
+
+  // Affirmations
+  const affirmations = [
+    { symbol: "✦", text: "I am a channel of healing light. My energy is sacred, my presence is enough." },
+    { symbol: "☽", text: "Like the moon, I have phases. All of them are beautiful. All of them are me." },
+    { symbol: "✿", text: "I am rooted in the earth and open to the sky. I grow with grace." },
+    { symbol: "◈", text: "My intuition is strong. My healing hands carry love wherever they go." },
+    { symbol: "⊹", text: "I release what no longer serves me and welcome in abundance and light." },
+    { symbol: "✧", text: "I am in harmony with nature, with the seasons, and with my own sacred rhythms." },
+    { symbol: "☿", text: "My spirit is ancient. My healing is real. My magic is mine." },
+    { symbol: "◇", text: "I trust the universe to guide my hands and my heart in every healing." },
+    { symbol: "☾", text: "I am protected, grounded, and infinitely loved by the universe." },
+    { symbol: "✦", text: "Nature renews itself — and so do I. Every day is a fresh beginning." },
+  ];
+  let affIdx = 0;
+  function newAffirmation() {
+    affIdx = (affIdx + 1) % affirmations.length;
+    document.getElementById('aff-symbol').textContent = affirmations[affIdx].symbol;
+    document.getElementById('aff-text').textContent = affirmations[affIdx].text;
+  }
+
+  // Weather (Open-Meteo — no API key needed)
+  const wIcons = {0:'☀️',1:'🌤',2:'⛅',3:'☁️',45:'🌫',48:'🌫',51:'🌦',53:'🌦',55:'🌧',61:'🌧',63:'🌧',65:'🌧',71:'🌨',73:'🌨',75:'❄️',80:'🌦',81:'🌧',82:'⛈',95:'⛈',96:'⛈',99:'⛈'};
+  const wDesc = {0:'Clear sky',1:'Mainly clear',2:'Partly cloudy',3:'Overcast',45:'Foggy',48:'Icy fog',51:'Light drizzle',53:'Drizzle',55:'Heavy drizzle',61:'Light rain',63:'Rain',65:'Heavy rain',71:'Light snow',73:'Snow',75:'Heavy snow',80:'Light showers',81:'Showers',82:'Heavy showers',95:'Thunderstorm',96:'Thunderstorm',99:'Thunderstorm'};
+
+  function showWeather(data, loc) {
+    const c = data.current;
+    const tempF = Math.round(c.temperature_2m * 9/5 + 32);
+    const feelsF = Math.round(c.apparent_temperature * 9/5 + 32);
+    const windMph = Math.round(c.wind_speed_10m * 0.621371);
+    document.getElementById('weather-content').innerHTML =
+      '<div class="weather-main">' +
+        '<div class="weather-icon">' + (wIcons[c.weather_code] || '🌡') + '</div>' +
+        '<div>' +
+          '<div class="weather-temp">' + tempF + '°F</div>' +
+          '<div class="weather-desc">' + (wDesc[c.weather_code] || '') + '</div>' +
+          '<div class="weather-location">' + loc + '</div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="weather-details">' +
+        '<div class="weather-detail"><div class="weather-detail-label">Feels like</div><div class="weather-detail-val">' + feelsF + '°F</div></div>' +
+        '<div class="weather-detail"><div class="weather-detail-label">Humidity</div><div class="weather-detail-val">' + c.relative_humidity_2m + '%</div></div>' +
+        '<div class="weather-detail"><div class="weather-detail-label">Wind</div><div class="weather-detail-val">' + windMph + ' mph</div></div>' +
+        '<div class="weather-detail"><div class="weather-detail-label">UV Index</div><div class="weather-detail-val">' + (c.uv_index != null ? c.uv_index : '—') + '</div></div>' +
+      '</div>';
+  }
+
+  async function fetchWeather(lat, lon, loc) {
+    try {
+      const r = await fetch('https://api.open-meteo.com/v1/forecast?latitude=' + lat + '&longitude=' + lon + '&current=temperature_2m,apparent_temperature,relative_humidity_2m,weather_code,wind_speed_10m,uv_index');
+      showWeather(await r.json(), loc);
+    } catch(e) {
+      document.getElementById('weather-content').innerHTML = '<p class="weather-loading">Weather unavailable right now.</p>';
+    }
+  }
+
+  async function getLocName(lat, lon) {
+    try {
+      const r = await fetch('https://nominatim.openstreetmap.org/reverse?lat=' + lat + '&lon=' + lon + '&format=json');
+      const d = await r.json();
+      return d.address?.city || d.address?.town || d.address?.village || d.address?.county || 'Your location';
+    } catch { return 'Your location'; }
+  }
+
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      async pos => {
+        const lat = pos.coords.latitude, lon = pos.coords.longitude;
+        const loc = await getLocName(lat, lon);
+        fetchWeather(lat, lon, loc);
+      },
+      () => fetchWeather(38.6595, -87.1728, 'Washington, IN')
+    );
+  } else {
+    fetchWeather(38.6595, -87.1728, 'Washington, IN');
+  }
+
+  // Brain dump
+  const bd = document.getElementById('braindump-area');
+  bd.value = localStorage.getItem('jamie-braindump') || '';
+  let bdTimer;
+  bd.addEventListener('input', () => {
+    clearTimeout(bdTimer);
+    document.getElementById('braindump-save-note').textContent = 'Saving...';
+    bdTimer = setTimeout(() => {
+      localStorage.setItem('jamie-braindump', bd.value);
+      document.getElementById('braindump-save-note').textContent = 'Saved ✓';
+      setTimeout(() => { document.getElementById('braindump-save-note').textContent = 'Auto-saved to this browser'; }, 2000);
+    }, 800);
+  });
+
+  // To Do
+  let todos = JSON.parse(localStorage.getItem('jamie-todos') || '[]');
+  function saveTodos() { localStorage.setItem('jamie-todos', JSON.stringify(todos)); }
+
+  function renderTodos() {
+    const list = document.getElementById('todo-list');
+    list.innerHTML = '';
+    if (todos.length === 0) {
+      const li = document.createElement('li');
+      li.className = 'todo-empty';
+      li.textContent = 'Your list is clear — enjoy the peace ✨';
+      list.appendChild(li);
+      return;
+    }
+    todos.forEach((todo, i) => {
+      const li = document.createElement('li');
+      li.className = 'todo-item';
+      const check = document.createElement('button');
+      check.className = 'todo-check' + (todo.done ? ' done' : '');
+      check.textContent = todo.done ? '✓' : '';
+      check.onclick = () => { todos[i].done = !todos[i].done; saveTodos(); renderTodos(); };
+      const span = document.createElement('span');
+      span.className = 'todo-text' + (todo.done ? ' done' : '');
+      span.textContent = todo.text;
+      const del = document.createElement('button');
+      del.className = 'todo-del';
+      del.textContent = '×';
+      del.onclick = () => { todos.splice(i, 1); saveTodos(); renderTodos(); };
+      li.append(check, span, del);
+      list.appendChild(li);
+    });
+  }
+
+  function addTodo() {
+    const input = document.getElementById('todo-input');
+    const text = input.value.trim();
+    if (!text) return;
+    todos.unshift({ text, done: false });
+    saveTodos();
+    renderTodos();
+    input.value = '';
+    input.focus();
+  }
+
+  document.getElementById('todo-input').addEventListener('keydown', e => { if (e.key === 'Enter') addTodo(); });
+  renderTodos();
+</script>
+</body>
+</html>
