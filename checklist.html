@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Due Dates · Jamie's Sacred Space</title>
+<meta name="theme-color" content="#faf6f0">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --rose: #e8c4c4; --rose-ink: #8a5050;
+    --lavender: #c9c0d8; --lavender-ink: #5c4f80;
+    --sage: #b8c9b8; --sage-ink: #4a6b4a;
+    --sky: #a8c8e8; --sky-ink: #3f608a;
+    --cream: #faf6f0;
+    --text-dark: #3a3040; --text-mid: #6b5f7a; --text-soft: #9d8fab;
+    --gold: #c9a96e; --gold-light: #e8d5b0;
+  }
+
+  body {
+    font-family: 'Jost', sans-serif;
+    background-color: var(--cream);
+    color: var(--text-dark);
+    min-height: 100vh;
+    background-image:
+      radial-gradient(ellipse at 20% 10%, rgba(201,192,216,0.25) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 90%, rgba(184,201,184,0.2) 0%, transparent 50%),
+      radial-gradient(ellipse at 60% 30%, rgba(232,196,196,0.15) 0%, transparent 40%);
+  }
+
+  .wrap { max-width: 780px; margin: 0 auto; padding: 0 1.3rem 4rem; }
+
+  .back-link { display: inline-block; margin-top: 1.5rem; text-decoration: none; font-size: 0.72rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-soft); transition: color 0.2s; }
+  .back-link:hover { color: var(--text-mid); }
+
+  header.page-head { text-align: center; padding: 1.5rem 0 1rem; }
+  .header-moon { font-size: 1.8rem; margin-bottom: 0.4rem; filter: drop-shadow(0 0 8px rgba(201,169,110,0.4)); }
+  h1 { font-family: 'Cormorant Garamond', serif; font-size: 2.1rem; font-weight: 300; letter-spacing: 0.1em; }
+  h1 span { color: var(--text-mid); font-style: italic; }
+  .subtitle { font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-soft); margin-top: 0.4rem; }
+  .divider { width: 80px; height: 1px; background: linear-gradient(to right, transparent, var(--gold), transparent); margin: 1.1rem auto; }
+
+  .progress-row { display: flex; align-items: center; gap: 0.8rem; margin: 0 auto 1.2rem; max-width: 480px; }
+  .progress-track { flex: 1; height: 6px; border-radius: 999px; background: rgba(201,169,110,0.15); overflow: hidden; }
+  .progress-fill { height: 100%; background: linear-gradient(to right, var(--lavender), var(--gold)); border-radius: 999px; transition: width .3s ease; width: 0%; }
+  .progress-label { font-size: 0.72rem; color: var(--text-soft); white-space: nowrap; letter-spacing: 0.05em; }
+
+  .filter-row { display: flex; gap: 0.4rem; flex-wrap: wrap; justify-content: center; margin-bottom: 0.5rem; }
+  .chip {
+    font-family: 'Jost', sans-serif; font-size: 0.75rem; letter-spacing: 0.04em;
+    padding: 0.3rem 0.8rem; border-radius: 16px; border: 1px solid rgba(201,169,110,0.3);
+    background: rgba(255,255,255,0.55); color: var(--text-mid); cursor: pointer;
+    display: inline-flex; align-items: center; gap: 0.35rem; transition: all 0.2s;
+  }
+  .chip:hover { border-color: var(--gold); color: var(--text-dark); }
+  .chip[aria-pressed="true"] { background: var(--text-mid); border-color: var(--text-mid); color: var(--cream); }
+  .chip .n { font-size: 0.65rem; opacity: 0.7; }
+  .chip .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .chip[data-course="apsy"] .dot { background: var(--lavender); }
+  .chip[data-course="phlt"] .dot { background: var(--sky); }
+  .chip[data-course="self"] .dot { background: var(--rose); }
+  .chip[data-course="socp"] .dot { background: var(--sage); }
+
+  .course-strip { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0.6rem; margin-top: 1.4rem; }
+  .course-card {
+    background: rgba(255,255,255,0.65); border: 1px solid rgba(201,169,110,0.2);
+    border-top: 3px solid var(--gold-light); border-radius: 14px; padding: 0.7rem 0.9rem;
+    backdrop-filter: blur(8px);
+  }
+  .course-card[data-course="apsy"] { border-top-color: var(--lavender); }
+  .course-card[data-course="phlt"] { border-top-color: var(--sky); }
+  .course-card[data-course="self"] { border-top-color: var(--rose); }
+  .course-card[data-course="socp"] { border-top-color: var(--sage); }
+  .course-card .cname { font-size: 0.78rem; line-height: 1.3; color: var(--text-dark); }
+  .course-card .cnums { font-size: 0.68rem; color: var(--text-soft); margin-top: 0.25rem; }
+  .course-card .cbar { height: 4px; border-radius: 999px; background: rgba(201,169,110,0.15); margin-top: 0.45rem; overflow: hidden; }
+  .course-card .cbar i { display: block; height: 100%; background: linear-gradient(to right, var(--sage), var(--gold)); border-radius: 999px; }
+
+  .section-label { font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.2em; color: var(--text-soft); margin: 0 0 0.6rem; display: flex; align-items: center; gap: 0.4rem; }
+  .section-label::after { content: ''; flex: 1; height: 1px; background: rgba(201,169,110,0.25); }
+  .next-up { margin-top: 1.6rem; }
+  .next-card {
+    display: flex; align-items: center; gap: 0.7rem; background: rgba(255,255,255,0.65);
+    border: 1px solid rgba(201,169,110,0.2); border-left: 3px solid var(--gold-light);
+    border-radius: 12px; padding: 0.65rem 0.85rem; margin-bottom: 0.45rem; backdrop-filter: blur(8px);
+  }
+  .next-card[data-course="apsy"] { border-left-color: var(--lavender); }
+  .next-card[data-course="phlt"] { border-left-color: var(--sky); }
+  .next-card[data-course="self"] { border-left-color: var(--rose); }
+  .next-card[data-course="socp"] { border-left-color: var(--sage); }
+  .next-card .title { font-size: 0.85rem; line-height: 1.35; }
+  .next-card .meta { font-size: 0.7rem; color: var(--text-soft); margin-top: 2px; }
+
+  .notice {
+    display: flex; gap: 0.7rem; align-items: flex-start;
+    background: rgba(232,213,176,0.3); color: #7a6237; border: 1px solid rgba(201,169,110,0.3);
+    border-radius: 12px; padding: 0.8rem 1rem; margin-top: 1.6rem;
+    font-size: 0.8rem; line-height: 1.55;
+  }
+  .notice .bang { flex-shrink: 0; }
+
+  main { margin-top: 1.8rem; }
+  .day-group { margin-bottom: 1.5rem; }
+  .day-group.hidden { display: none; }
+  .day-head { display: flex; align-items: baseline; gap: 0.5rem; margin-bottom: 0.55rem; padding-bottom: 0.4rem; border-bottom: 1px solid rgba(201,169,110,0.25); }
+  .day-date { font-family: 'Cormorant Garamond', serif; font-weight: 400; font-size: 1.25rem; }
+  .day-weekday { font-size: 0.65rem; color: var(--text-soft); text-transform: uppercase; letter-spacing: 0.1em; }
+  .day-head .spacer { flex: 1; }
+
+  .due-chip { font-size: 0.62rem; letter-spacing: 0.06em; padding: 2px 9px; border-radius: 10px; white-space: nowrap; text-transform: uppercase; }
+  .due-chip.overdue, .due-chip.today { background: rgba(232,196,196,0.6); color: var(--rose-ink); }
+  .due-chip.soon    { background: rgba(232,213,176,0.55); color: #7a6237; }
+  .due-chip.later   { background: rgba(201,192,216,0.4); color: var(--lavender-ink); }
+  .due-chip.done    { background: rgba(184,201,184,0.5); color: var(--sage-ink); }
+  .due-chip.undated { background: rgba(201,169,110,0.15); color: var(--text-soft); }
+
+  ul.items { list-style: none; display: flex; flex-direction: column; gap: 0.35rem; }
+  li.item {
+    display: flex; align-items: flex-start; gap: 0.65rem; background: rgba(255,255,255,0.6);
+    border: 1px solid rgba(201,169,110,0.18); border-left: 3px solid var(--gold-light);
+    border-radius: 10px; padding: 0.6rem 0.75rem; backdrop-filter: blur(6px);
+  }
+  li.item[data-course="apsy"] { border-left-color: var(--lavender); }
+  li.item[data-course="phlt"] { border-left-color: var(--sky); }
+  li.item[data-course="self"] { border-left-color: var(--rose); }
+  li.item[data-course="socp"] { border-left-color: var(--sage); }
+  li.item.item-hidden { display: none; }
+
+  li.item input[type="checkbox"] {
+    appearance: none; -webkit-appearance: none; width: 17px; height: 17px;
+    border-radius: 50%; border: 1.5px solid rgba(201,169,110,0.6); background: transparent;
+    flex-shrink: 0; margin-top: 2px; cursor: pointer; display: grid; place-content: center;
+    transition: all 0.2s;
+  }
+  li.item input[type="checkbox"]::before {
+    content: ""; width: 9px; height: 9px; transform: scale(0); background: var(--sage-ink);
+    clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 45% 62%);
+    transition: transform .12s ease-in-out;
+  }
+  li.item input[type="checkbox"]:checked::before { transform: scale(1.35); }
+  li.item input[type="checkbox"]:checked { border-color: #7aaa7a; background: rgba(184,201,184,0.5); }
+
+  .item-body { flex: 1; min-width: 0; }
+  .item-title { font-size: 0.84rem; line-height: 1.4; }
+  li.item.checked .item-title { color: var(--text-soft); text-decoration: line-through; }
+  .item-tags { display: flex; gap: 0.3rem; margin-top: 0.3rem; flex-wrap: wrap; align-items: center; }
+  .tag { font-size: 0.58rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-soft); border: 1px solid rgba(201,169,110,0.25); border-radius: 8px; padding: 1px 7px; background: rgba(255,255,255,0.4); }
+  .tag.course-apsy { color: var(--lavender-ink); border-color: var(--lavender); background: rgba(201,192,216,0.25); }
+  .tag.course-phlt { color: var(--sky-ink); border-color: var(--sky); background: rgba(168,200,232,0.25); }
+  .tag.course-self { color: var(--rose-ink); border-color: var(--rose); background: rgba(232,196,196,0.25); }
+  .tag.course-socp { color: var(--sage-ink); border-color: var(--sage); background: rgba(184,201,184,0.25); }
+  .tag.major { color: var(--rose-ink); border-color: var(--rose); background: rgba(232,196,196,0.45); }
+  .tag.note { color: #7a6237; border-color: var(--gold-light); background: rgba(232,213,176,0.4); }
+
+  .empty-state { text-align: center; color: var(--text-soft); font-style: italic; font-size: 0.85rem; padding: 2.5rem 0; display: none; }
+  .empty-state.show { display: block; }
+
+  footer { margin-top: 2.5rem; padding-top: 1.2rem; border-top: 1px solid rgba(201,169,110,0.25); font-size: 0.78rem; color: var(--text-mid); line-height: 1.6; }
+  footer p { margin-bottom: 0.5rem; }
+  footer .legend { display: flex; gap: 0.9rem; flex-wrap: wrap; margin-bottom: 0.8rem; }
+  footer .legend span { display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.7rem; color: var(--text-soft); }
+  footer .legend i { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+  .save-note { text-align: center; font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-soft); margin-top: 0.8rem; }
+
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <a class="back-link" href="index.html">← back to sacred space</a>
+
+  <header class="page-head">
+    <div class="header-moon">✿</div>
+    <h1>Due Date <span>Checklist</span></h1>
+    <p class="subtitle">Fall 2026 · Four courses · Canvas + syllabus plan · <span id="updated-date"></span></p>
+    <div class="divider"></div>
+    <div class="progress-row">
+      <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+      <div class="progress-label" id="progressLabel">0 / 0 done</div>
+    </div>
+    <div class="filter-row" id="courseFilters">
+      <button class="chip" data-course="" aria-pressed="true">All courses<span class="n" id="cc-all"></span></button>
+      <button class="chip" data-course="apsy" aria-pressed="false"><i class="dot"></i>Abnormal Psych<span class="n" id="cc-apsy"></span></button>
+      <button class="chip" data-course="self" aria-pressed="false"><i class="dot"></i>Self-Management<span class="n" id="cc-self"></span></button>
+      <button class="chip" data-course="socp" aria-pressed="false"><i class="dot"></i>Social Problems<span class="n" id="cc-socp"></span></button>
+      <button class="chip" data-course="phlt" aria-pressed="false"><i class="dot"></i>Personal Health<span class="n" id="cc-phlt"></span></button>
+    </div>
+    <div class="filter-row" id="statusFilters">
+      <button class="chip" data-filter="all" aria-pressed="true">Everything<span class="n" id="count-all"></span></button>
+      <button class="chip" data-filter="overdue" aria-pressed="false">Overdue<span class="n" id="count-overdue"></span></button>
+      <button class="chip" data-filter="soon" aria-pressed="false">Next 7 days<span class="n" id="count-soon"></span></button>
+      <button class="chip" data-filter="major" aria-pressed="false">Big ones<span class="n" id="count-major"></span></button>
+      <button class="chip" data-filter="open" aria-pressed="false">Not done<span class="n" id="count-open"></span></button>
+    </div>
+  </header>
+
+  <div class="course-strip" id="courseStrip"></div>
+
+  <section class="next-up" id="nextUpSection">
+    <p class="section-label">✦ Up next</p>
+    <div id="nextUpList"></div>
+  </section>
+
+  <div class="notice"><span class="bang">🕊</span><div>
+    <strong>Three kinds of dates live here.</strong>
+    Plain items are confirmed in Canvas. <em>Syllabus schedule</em> items are K310's weekly deadlines from the syllabus — Canvas shows lump dates in October, but the weekly rhythm is being trusted instead (late work costs 10% a day there).
+    <em>Unconfirmed</em> items are predicted from the Personal Health and Social Problems syllabi because those instructors haven't published past Week 1 yet — ask Claude to re-sync in a couple of weeks and real dates will replace them.
+  </div></div>
+
+  <main id="agenda"></main>
+  <p class="empty-state" id="emptyState">Nothing matches this filter — nice work ✨</p>
+
+  <footer>
+    <div class="legend">
+      <span><i style="background: var(--lavender)"></i>Abnormal Psychology</span>
+      <span><i style="background: var(--rose)"></i>Self-Management &amp; Health Promotion</span>
+      <span><i style="background: var(--sage)"></i>Social Problems and Policies</span>
+      <span><i style="background: var(--sky)"></i>Personal Health</span>
+    </div>
+    <p>Everything is due at 11:59pm. Abnormal Psychology stacks its work into big Saturday batches — the dashboard schedule spreads those out for you.</p>
+    <p>Two Abnormal Psych discussions need the casebook in hand (Chapter 5 and Chapter 6), and the Self-Management wellness journal runs across five days.</p>
+    <p class="save-note">Checkmarks shared with the dashboard · synced across devices when linked</p>
+  </footer>
+</div>
+
+<script src="data/coursework.js"></script>
+<script src="data/sync.js"></script>
+<script>
+(function () {
+  var COURSES = window.COURSEWORK.courses;
+  var ORDER = window.COURSEWORK.order;
+  var DATA = window.COURSEWORK.items;
+
+  document.getElementById('updated-date').textContent =
+    new Date(window.COURSEWORK.updated + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+
+  function slug(s) {
+    return String(s).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 60);
+  }
+  var items = DATA.map(function (r) {
+    return { id: r[1] + ":" + slug(r[3]), date: r[0], course: r[1], type: r[2], title: r[3], major: r[4], note: r[5], src: r[6] || "" };
+  });
+
+  // Shared with the dashboard's Today/Week cards via data/sync.js,
+  // which also syncs across devices when configured.
+  var checked = window.loadChecked();
+  function saveChecked() { window.saveChecked(checked); }
+
+  var now = new Date(); now.setHours(0, 0, 0, 0);
+  function daysUntil(d) { return Math.round((new Date(d + "T00:00:00") - now) / 86400000); }
+  function fmtDate(d) { return new Date(d + "T00:00:00").toLocaleDateString("en-US", { month: "short", day: "numeric" }); }
+  function fmtWeekday(d) { return new Date(d + "T00:00:00").toLocaleDateString("en-US", { weekday: "long" }); }
+  function urgClass(diff, done) {
+    if (done) return "done";
+    if (diff < 0) return "overdue";
+    if (diff === 0) return "today";
+    if (diff <= 7) return "soon";
+    return "later";
+  }
+  function urgLabel(diff, done) {
+    if (done) return "done";
+    if (diff < 0) return diff === -1 ? "1 day late" : (-diff) + " days late";
+    if (diff === 0) return "due tonight";
+    if (diff === 1) return "due tomorrow";
+    return "due in " + diff + "d";
+  }
+  function esc(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+
+  var agenda = document.getElementById("agenda");
+  var nextUpList = document.getElementById("nextUpList");
+  var courseStrip = document.getElementById("courseStrip");
+  var courseFilter = "";
+  var statusFilter = "all";
+
+  function render() {
+    agenda.innerHTML = "";
+
+    var cc = { "": 0, apsy: 0, phlt: 0, self: 0, socp: 0 };
+    items.forEach(function (it) { cc[""]++; cc[it.course]++; });
+    document.getElementById("cc-all").textContent = cc[""];
+    ORDER.forEach(function (k) { document.getElementById("cc-" + k).textContent = cc[k]; });
+
+    courseStrip.innerHTML = "";
+    ORDER.forEach(function (k) {
+      var all = items.filter(function (it) { return it.course === k; });
+      var done = all.filter(function (it) { return checked[it.id]; }).length;
+      var pct = all.length ? Math.round(done / all.length * 100) : 0;
+      var card = document.createElement("div");
+      card.className = "course-card";
+      card.dataset.course = k;
+      card.innerHTML =
+        '<div class="cname">' + esc(COURSES[k].full) + '</div>' +
+        '<div class="cnums">' + done + ' of ' + all.length + ' done</div>' +
+        '<div class="cbar"><i style="width:' + pct + '%"></i></div>';
+      courseStrip.appendChild(card);
+    });
+
+    var scoped = items.filter(function (it) { return !courseFilter || it.course === courseFilter; });
+    var counts = { all: scoped.length, overdue: 0, soon: 0, major: 0, open: 0 };
+    scoped.forEach(function (it) {
+      var done = !!checked[it.id];
+      if (it.date) {
+        var diff = daysUntil(it.date);
+        if (!done && diff < 0) counts.overdue++;
+        if (!done && diff >= 0 && diff <= 7) counts.soon++;
+      }
+      if (it.major) counts.major++;
+      if (!done) counts.open++;
+    });
+    ["all", "overdue", "soon", "major", "open"].forEach(function (k) {
+      document.getElementById("count-" + k).textContent = counts[k];
+    });
+
+    var doneCount = scoped.filter(function (it) { return checked[it.id]; }).length;
+    document.getElementById("progressFill").style.width = (scoped.length ? (doneCount / scoped.length * 100) : 0) + "%";
+    document.getElementById("progressLabel").textContent = doneCount + " / " + scoped.length + " done";
+
+    var upcoming = scoped.filter(function (it) { return it.date && !checked[it.id]; })
+      .sort(function (a, b) { return daysUntil(a.date) - daysUntil(b.date); }).slice(0, 4);
+    nextUpList.innerHTML = "";
+    document.getElementById("nextUpSection").style.display = upcoming.length ? "" : "none";
+    upcoming.forEach(function (it) {
+      var diff = daysUntil(it.date);
+      var card = document.createElement("div");
+      card.className = "next-card";
+      card.dataset.course = it.course;
+      card.innerHTML =
+        '<span class="due-chip ' + urgClass(diff, false) + '">' + urgLabel(diff, false) + '</span>' +
+        '<div><div class="title">' + esc(it.title) + '</div>' +
+        '<div class="meta">' + esc(COURSES[it.course].full) + ' · ' + esc(it.type) + ' · ' + fmtDate(it.date) + '</div></div>';
+      nextUpList.appendChild(card);
+    });
+
+    var byDate = {};
+    scoped.filter(function (it) { return it.date; }).forEach(function (it) { (byDate[it.date] = byDate[it.date] || []).push(it); });
+    Object.keys(byDate).sort().forEach(function (date) {
+      var g = byDate[date];
+      var allDone = g.every(function (it) { return checked[it.id]; });
+      var diff = daysUntil(date);
+      agenda.appendChild(buildGroup(fmtDate(date), fmtWeekday(date),
+        '<span class="due-chip ' + urgClass(diff, allDone) + '">' + urgLabel(diff, allDone) + '</span>', g, date));
+    });
+
+    var un = scoped.filter(function (it) { return !it.date; });
+    if (un.length) {
+      agenda.appendChild(buildGroup("No date set", "Whenever", '<span class="due-chip undated">' + un.length + ' item' + (un.length > 1 ? 's' : '') + '</span>', un, null));
+    }
+
+    applyStatusFilter();
+  }
+
+  function buildGroup(dateLabel, sub, chipHtml, groupItems, date) {
+    var section = document.createElement("section");
+    section.className = "day-group";
+    var head = document.createElement("div");
+    head.className = "day-head";
+    head.innerHTML = '<span class="day-date">' + esc(dateLabel) + '</span>' +
+      '<span class="day-weekday">' + esc(sub) + '</span><span class="spacer"></span>' + chipHtml;
+    section.appendChild(head);
+
+    var ul = document.createElement("ul");
+    ul.className = "items";
+    groupItems.forEach(function (it) {
+      var li = document.createElement("li");
+      li.className = "item" + (checked[it.id] ? " checked" : "");
+      li.dataset.id = it.id;
+      li.dataset.course = it.course;
+      li.dataset.major = it.major ? "1" : "0";
+      if (date) li.dataset.date = date;
+
+      var cb = document.createElement("input");
+      cb.type = "checkbox";
+      cb.checked = !!checked[it.id];
+      cb.setAttribute("aria-label", 'Mark "' + it.title + '" done');
+      cb.addEventListener("change", function () {
+        if (cb.checked) checked[it.id] = true; else delete checked[it.id];
+        saveChecked();
+        render();
+      });
+
+      var body = document.createElement("div");
+      body.className = "item-body";
+      body.innerHTML =
+        '<div class="item-title">' + esc(it.title) + '</div>' +
+        '<div class="item-tags">' +
+          '<span class="tag course-' + it.course + '">' + esc(COURSES[it.course].label) + '</span>' +
+          '<span class="tag">' + esc(it.type) + '</span>' +
+          (it.major ? '<span class="tag major">Counts a lot</span>' : '') +
+          (it.src === 'plan' ? '<span class="tag">Syllabus schedule</span>' : '') +
+          (it.note ? '<span class="tag note">' + esc(it.note) + '</span>' : '') +
+        '</div>';
+
+      li.appendChild(cb); li.appendChild(body); ul.appendChild(li);
+    });
+    section.appendChild(ul);
+    return section;
+  }
+
+  function applyStatusFilter() {
+    var anyVisible = false;
+    document.querySelectorAll(".day-group").forEach(function (section) {
+      var groupHasVisible = false;
+      section.querySelectorAll("li.item").forEach(function (li) {
+        var isChecked = !!checked[li.dataset.id];
+        var hasDate = !!li.dataset.date;
+        var diff = hasDate ? daysUntil(li.dataset.date) : null;
+        var isMajor = li.dataset.major === "1";
+        var show = true;
+        if (statusFilter === "overdue") show = hasDate && !isChecked && diff < 0;
+        else if (statusFilter === "soon") show = hasDate && !isChecked && diff >= 0 && diff <= 7;
+        else if (statusFilter === "major") show = isMajor;
+        else if (statusFilter === "open") show = !isChecked;
+        li.classList.toggle("item-hidden", !show);
+        if (show) groupHasVisible = true;
+      });
+      section.classList.toggle("hidden", !groupHasVisible);
+      if (groupHasVisible) anyVisible = true;
+    });
+    document.getElementById("emptyState").classList.toggle("show", !anyVisible);
+  }
+
+  document.getElementById("courseFilters").addEventListener("click", function (e) {
+    var btn = e.target.closest(".chip"); if (!btn) return;
+    this.querySelectorAll(".chip").forEach(function (c) { c.setAttribute("aria-pressed", "false"); });
+    btn.setAttribute("aria-pressed", "true");
+    courseFilter = btn.dataset.course; render();
+  });
+
+  document.getElementById("statusFilters").addEventListener("click", function (e) {
+    var btn = e.target.closest(".chip"); if (!btn) return;
+    this.querySelectorAll(".chip").forEach(function (c) { c.setAttribute("aria-pressed", "false"); });
+    btn.setAttribute("aria-pressed", "true");
+    statusFilter = btn.dataset.filter; applyStatusFilter();
+  });
+
+  render();
+  window.initSync(function () { checked = window.loadChecked(); render(); });
+})();
+</script>
+</body>
+</html>
